@@ -18,18 +18,29 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,38 +64,32 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Logo(modifier :Modifier = Modifier) {
     val icon = R.drawable.the_best_part_icon
-    Row(modifier = Modifier
-        .padding(16.dp)
-        .border(width = 3.dp, color = Color.LightGray),
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.Absolute.Center){
+    Row(modifier = Modifier,
+//        .border(width = 5.dp, Color = Color.DarkGray,  Shape = RectangleShape),
+        verticalAlignment = Alignment.CenterVertically){
         //make it into icon maybe?
         Image(
             painter = painterResource(icon),
             //provide a message if logo cannot be loaded
             contentDescription =  R.drawable.the_best_part_icon.toString(),
             modifier
-                .padding(10.dp)
                 .width(150.dp)
                 .height(150.dp)
         )
-        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Explore The Best Part coffee shop menu to always get the part of your favorite pastries!",
             modifier
-                .padding(10.dp)
-                .width(100.dp)
+                .padding(top = 55.dp)
                 .height(150.dp),
-            fontSize = 12.sp
+            textAlign = TextAlign.Center
         )
     }
 
 }
 
 @Composable
-fun FoodItems(
-//    quantity: Int,
-    modifier :Modifier = Modifier){
+fun FoodItems(modifier :Modifier = Modifier){
+    var quantity by remember { mutableStateOf(0)}
     val food_names= stringArrayResource(id = R.array.food_names)
     val food_descriptions= stringArrayResource(id = R.array.food_descriptions)
     val food_prices= stringArrayResource(id = R.array.food_prices)
@@ -99,11 +104,31 @@ fun FoodItems(
     Column (modifier = modifier
         .padding(16.dp)){
         for(food in InitialMenuItem){
-
             Text(
-                text = "${food.Food_name}, ${food.Food_description}, ${food.Food_price}",
-                modifier.padding(10.dp)
+                text = "${food.Food_name}. ${food.Food_description}",
+                modifier.padding(10.dp),
+                textAlign = TextAlign.Center
             )
+            Text(
+                text = "Price: ${food.Food_price}$",
+                modifier.padding(10.dp),
+                textAlign = TextAlign.Center
+            )
+            Row (modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center){
+                Button(onClick =  { quantity++}){
+                    Text("+")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "$quantity",
+                    modifier.padding(top = 13.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Button(onClick =  {quantity--}){
+                    Text("-");
+                }
+            }
+
         }
     }
 }
@@ -112,10 +137,10 @@ fun FoodItems(
 fun TotalPrices(
 //    quantity : Int, food: MenuItem
 ){
-    var brut_total = 0
-    var gst = 0
-    var qst = 0
-    var net_total = 0
+    var brut_total by remember { mutableStateOf(0)}
+    var gst = 0.05
+    var qst = 0.09975
+    var net_total by remember { mutableStateOf(0)}
     Column (modifier = Modifier
         .padding(16.dp)
     ){
@@ -137,20 +162,16 @@ fun TotalPrices(
 data class MenuItem(
     var Food_name: String,
     var Food_description: String,
-    var Food_price: String){
-    fun menuItem(foodName: String, foodDescription : String, foodPrice: String){
-        this.Food_name = foodName
-        this.Food_description = foodDescription
-        this.Food_price = foodPrice
-    }
-}
+    var Food_price: String)
+
 //for barcode
 //generateEncoder()
 //encodeBitMap(inputStr, BarcodeFormat.QR_CODE)
 
 @Composable
 fun MenuApp(){
-    Column {
+    Column (modifier = Modifier
+        .verticalScroll(rememberScrollState())){
         Logo()
         FoodItems(
             modifier = Modifier
