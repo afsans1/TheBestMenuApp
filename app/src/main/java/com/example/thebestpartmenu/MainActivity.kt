@@ -22,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,31 +53,31 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Logo(modifier :Modifier = Modifier) {
     val icon = R.drawable.the_best_part_icon
-        Row(modifier = Modifier
-            .padding(16.dp)
-            .border(width = 3.dp, color = Color.LightGray),
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.Center){
-            //make it into icon maybe?
-            Image(
-                painter = painterResource(icon),
-                //provide a message if logo cannot be loaded
-                contentDescription =  R.drawable.the_best_part_icon.toString(),
-                modifier
-                    .padding(10.dp)
-                    .width(150.dp)
-                    .height(150.dp),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Explore The Best Part coffee shop menu to always get the part of your favorite pastries!",
-                modifier
-                    .padding(10.dp)
-                    .width(100.dp)
-                    .height(150.dp),
-                fontSize = 15.sp
-            )
-        }
+    Row(modifier = Modifier
+        .padding(16.dp)
+        .border(width = 3.dp, color = Color.LightGray),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.Absolute.Center){
+        //make it into icon maybe?
+        Image(
+            painter = painterResource(icon),
+            //provide a message if logo cannot be loaded
+            contentDescription =  R.drawable.the_best_part_icon.toString(),
+            modifier
+                .padding(10.dp)
+                .width(150.dp)
+                .height(150.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Explore The Best Part coffee shop menu to always get the part of your favorite pastries!",
+            modifier
+                .padding(10.dp)
+                .width(100.dp)
+                .height(150.dp),
+            fontSize = 12.sp
+        )
+    }
 
 }
 
@@ -96,17 +97,43 @@ fun FoodItems(
         )
     }
     Column (modifier = modifier
-        .padding(50.dp)){
+        .padding(16.dp)){
         for(food in InitialMenuItem){
 
             Text(
                 text = "${food.Food_name}, ${food.Food_description}, ${food.Food_price}",
+                modifier.padding(10.dp)
             )
         }
-        Spacer(modifier = Modifier.height(5.dp))
     }
-
 }
+
+@Composable
+fun TotalPrices(
+//    quantity : Int, food: MenuItem
+){
+    var brut_total = 0
+    var gst = 0
+    var qst = 0
+    var net_total = 0
+    Column (modifier = Modifier
+        .padding(16.dp)
+    ){
+        Text(
+            text = "Total: $$brut_total"
+        )
+        Text(
+            text = "GST (5%): $$gst"
+        )
+        Text(
+            text = "QST (9.975%): $$qst"
+        )
+        Text(
+            text = "Total (tax included): $$net_total"
+        )
+    }
+}
+
 data class MenuItem(
     var Food_name: String,
     var Food_description: String,
@@ -128,6 +155,7 @@ fun MenuApp(){
         FoodItems(
             modifier = Modifier
         )
+        TotalPrices()
     }
 }
 

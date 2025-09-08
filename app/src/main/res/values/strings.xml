@@ -1,21 +1,21 @@
 <resources>
     <string name="app_name">The Best Part Menu</string>
     <string-array name="food_names">
-        <item>croissant</item>
-        <item>paris_brest</item>
-        <item>mille_feuille</item>
-        <item>kouign_amman</item>
-        <item>latte</item>
-        <item>americano</item>
+        <item>Croissant</item>
+        <item>Paris Brest</item>
+        <item>Mille Feuille</item>
+        <item>Kouign Amann</item>
+        <item>Latte</item>
+        <item>Americano</item>
     </string-array>
 
     <string-array name="food_descriptions">
-        <item>croissant</item>
-        <item>paris_brest</item>
-        <item>mille_feuille</item>
-        <item>kouign_amman</item>
-        <item>latte</item>
-        <item>americano</item>
+        <item>A French Viennoiserie in a crescent shape</item>
+        <item>A French Viennoiserie made of choux pastry and a plaine flavoured cream, covered with flaked almonds</item>
+        <item>A Cake made up of puff pastry and pastry cream</item>
+        <item>A French Viennoiserie made with croissant dough with more butter and sugar</item>
+        <item>Coffee made with espresso and steamed milk</item>
+        <item>Coffe made with espresso and hot water</item>
     </string-array>
 
     <string-array name="food_prices">
