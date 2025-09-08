@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.thebestpartmenu"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.thebestpartmenu"
@@ -32,7 +32,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "11" // Keep as 11, or change to 17/21 if you're using Java 17 or higher
     }
     buildFeatures {
         compose = true

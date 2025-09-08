@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">The Best Part Menu</string>
+    <string-array name="food_names">
+        <item>croissant</item>
+        <item>paris_brest</item>
+        <item>mille_feuille</item>
+        <item>kouign_amman</item>
+        <item>latte</item>
+        <item>americano</item>
+    </string-array>
+
+    <string-array name="food_descriptions">
+        <item>croissant</item>
+        <item>paris_brest</item>
+        <item>mille_feuille</item>
+        <item>kouign_amman</item>
+        <item>latte</item>
+        <item>americano</item>
+    </string-array>
+
+    <string-array name="food_prices">
+        <item>4.0</item>
+        <item>6.0</item>
+        <item>5.0</item>
+        <item>5.0</item>
+        <item>3.0</item>
+        <item>1.5</item>
+    </string-array>
 </resources>
