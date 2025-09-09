@@ -93,7 +93,7 @@ fun Logo(modifier :Modifier = Modifier) {
 }
 
 @Composable
-fun CreateInitialMenuItems(modifier :Modifier = Modifier): MutableList<MenuItem> {
+fun CreateInitialMenuItems(modifier :Modifier = Modifier) : MutableList<MenuItem>{
     var quantity by remember { mutableStateOf(0)}
     val food_names= stringArrayResource(id = R.array.food_names)
     val food_descriptions= stringArrayResource(id = R.array.food_descriptions)
@@ -109,9 +109,11 @@ fun CreateInitialMenuItems(modifier :Modifier = Modifier): MutableList<MenuItem>
             )
         )}
         FoodItems(modifier, InitialMenuItems, i)
-        return InitialMenuItems
+        if(i == food_names.size-1){
+            return InitialMenuItems
+        }
     }
-    throw error("Did not make the mutable list of menu items")
+    throw error("The mutable list of MenuItems was not created")
 }
 
 @Composable
@@ -119,6 +121,7 @@ fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<MenuItem>, inde
     Column (modifier = modifier
         .padding(16.dp)){
         for(food in initialMenuItems){
+
 //            clear(food)
             Text(
                 text = "${food.food_name}. ${food.food_description}",
@@ -150,9 +153,17 @@ fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<MenuItem>, inde
     }
 }
 
+@Composable fun CalculateTotal( initialMenuItems : MutableList<MenuItem>) {
+    var brut_total : MutableState<() -> Double>
+    brut_total = remember{ mutableStateOf({
+        for(food in initialMenuItems){
+            food.food_price.toDouble() * food.food_quantity.value }
+    })}
+    DisplayTotal(brut_total.value)
+}
+
 @Composable
-fun TotalPrices( MenuItem : MenuItem){
-    var brut_total = (MenuItem.food_price).toInt() * MenuItem.food_quantity.value
+fun DisplayTotal(brut_total : () -> Unit){
     val gst = 0.05
     val qst = 0.09975
     var net_total by remember { mutableStateOf(0)}
@@ -195,13 +206,10 @@ fun MenuApp(){
     Column (modifier = Modifier
         .verticalScroll(rememberScrollState())){
         Logo()
-        val initialMenuItems = CreateInitialMenuItems(
+        var initialMenuItems = CreateInitialMenuItems(
             modifier = Modifier
         )
-        for(menuItems in initialMenuItems){
-            TotalPrices(menuItems)
-        }
-
+        CalculateTotal(initialMenuItems)
     }
 }
 
