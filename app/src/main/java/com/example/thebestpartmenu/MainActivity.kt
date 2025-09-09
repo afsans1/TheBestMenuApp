@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -92,54 +93,56 @@ fun Logo(modifier :Modifier = Modifier) {
 }
 
 @Composable
-fun CreateInitialMenuItems(modifier :Modifier = Modifier){
+fun CreateInitialMenuItems(modifier :Modifier = Modifier): MutableList<MenuItem> {
     var quantity by remember { mutableStateOf(0)}
     val food_names= stringArrayResource(id = R.array.food_names)
     val food_descriptions= stringArrayResource(id = R.array.food_descriptions)
     val food_prices= stringArrayResource(id = R.array.food_prices)
-    val food_quantities = integerArrayResource(id = R.array.food_quantitites)
     //InitialMenuItem must be mutablestateof with lambda
-    var InitialMenuItems = remember { mutableListOf(List(food_names.size)
-        {index ->
+    for (i in 0..food_names.size-1){
+        val InitialMenuItems = remember { mutableListOf(
             MenuItem(
-                food_names[index],
-                food_descriptions[index],
-                food_prices[index],
-                food_quantities[index]
+                food_names[i],
+                food_descriptions[i],
+                food_prices[i],
+                mutableStateOf(0)
             )
-    })}
-    for (i in 0..InitialMenuItems.size){
+        )}
         FoodItems(modifier, InitialMenuItems, i)
+        return InitialMenuItems
     }
+    throw error("Did not make the mutable list of menu items")
 }
+
 @Composable
-fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<List<MenuItem>>, index: Int){
+fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<MenuItem>, index: Int){
     Column (modifier = modifier
         .padding(16.dp)){
-        var i by remember { mutableStateOf({})}
         for(food in initialMenuItems){
 //            clear(food)
             Text(
-                text = "${food[index].Food_name}. ${food[index].Food_description}",
+                text = "${food.food_name}. ${food.food_description}",
                 modifier.padding(10.dp),
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "Price: ${food[index].Food_price}$",
+                text = "Price: ${food.food_price}$",
                 modifier.padding(10.dp),
                 textAlign = TextAlign.Center
             )
             Row (modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center){
-                Button(onClick =  { food[index].Food_quantity += 1}){
+                Button(onClick =  {
+                    food.food_quantity.value += 1
+                }){
                     Text("+")
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "${food[index].Food_quantity}",
+                    text = "${food.food_quantity.value}",
                     modifier.padding(top = 13.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Button(onClick =  {food[index].Food_quantity-= 1}){
+                Button(onClick =  {food.food_quantity.value -= 1}){
                     Text("-");
                 }
             }
@@ -148,12 +151,10 @@ fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<List<MenuItem>>
 }
 
 @Composable
-fun TotalPrices(
-//    quantity : Int, food: MenuItem
-){
-    var brut_total by remember { mutableStateOf(0)}
-    var gst = 0.05
-    var qst = 0.09975
+fun TotalPrices( MenuItem : MenuItem){
+    var brut_total = (MenuItem.food_price).toInt() * MenuItem.food_quantity.value
+    val gst = 0.05
+    val qst = 0.09975
     var net_total by remember { mutableStateOf(0)}
     Column (modifier = Modifier
         .padding(16.dp)
@@ -180,10 +181,10 @@ fun TotalPrices(
 //}
 
 data class MenuItem(
-    var Food_name: String,
-    var Food_description: String,
-    var Food_price: String,
-    var Food_quantity: Int)
+    var food_name: String,
+    var food_description: String,
+    var food_price: String,
+    var food_quantity: MutableState<Int>)
 
 //for barcode
 //generateEncoder()
@@ -194,10 +195,13 @@ fun MenuApp(){
     Column (modifier = Modifier
         .verticalScroll(rememberScrollState())){
         Logo()
-        CreateInitialMenuItems(
+        val initialMenuItems = CreateInitialMenuItems(
             modifier = Modifier
         )
-        TotalPrices()
+        for(menuItems in initialMenuItems){
+            TotalPrices(menuItems)
+        }
+
     }
 }
 
