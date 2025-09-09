@@ -2,6 +2,8 @@ package com.example.thebestpartmenu
 
 import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
+import android.provider.ContactsContract.Data
+import android.view.Menu
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,8 +38,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.style.TextAlign
@@ -88,47 +92,57 @@ fun Logo(modifier :Modifier = Modifier) {
 }
 
 @Composable
-fun FoodItems(modifier :Modifier = Modifier){
+fun CreateInitialMenuItems(modifier :Modifier = Modifier){
     var quantity by remember { mutableStateOf(0)}
     val food_names= stringArrayResource(id = R.array.food_names)
     val food_descriptions= stringArrayResource(id = R.array.food_descriptions)
     val food_prices= stringArrayResource(id = R.array.food_prices)
+    val food_quantities = integerArrayResource(id = R.array.food_quantitites)
     //InitialMenuItem must be mutablestateof with lambda
-    val InitialMenuItem = List(food_names.size){index ->
-        MenuItem(
-            food_names[index],
-            food_descriptions[index],
-            food_prices[index]
-        )
+    var InitialMenuItems = remember { mutableListOf(List(food_names.size)
+        {index ->
+            MenuItem(
+                food_names[index],
+                food_descriptions[index],
+                food_prices[index],
+                food_quantities[index]
+            )
+    })}
+    for (i in 0..InitialMenuItems.size){
+        FoodItems(modifier, InitialMenuItems, i)
     }
+}
+@Composable
+fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<List<MenuItem>>, index: Int){
     Column (modifier = modifier
         .padding(16.dp)){
-        for(food in InitialMenuItem){
+        var i by remember { mutableStateOf({})}
+        for(food in initialMenuItems){
+//            clear(food)
             Text(
-                text = "${food.Food_name}. ${food.Food_description}",
+                text = "${food[index].Food_name}. ${food[index].Food_description}",
                 modifier.padding(10.dp),
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "Price: ${food.Food_price}$",
+                text = "Price: ${food[index].Food_price}$",
                 modifier.padding(10.dp),
                 textAlign = TextAlign.Center
             )
             Row (modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center){
-                Button(onClick =  { quantity++}){
+                Button(onClick =  { food[index].Food_quantity += 1}){
                     Text("+")
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "$quantity",
+                    text = "${food[index].Food_quantity}",
                     modifier.padding(top = 13.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
-                Button(onClick =  {quantity--}){
+                Button(onClick =  {food[index].Food_quantity-= 1}){
                     Text("-");
                 }
             }
-
         }
     }
 }
@@ -159,10 +173,17 @@ fun TotalPrices(
     }
 }
 
+//fun Clear(){
+//    Button(onClick = {}) {
+//        "Clear"
+//    }
+//}
+
 data class MenuItem(
     var Food_name: String,
     var Food_description: String,
-    var Food_price: String)
+    var Food_price: String,
+    var Food_quantity: Int)
 
 //for barcode
 //generateEncoder()
@@ -173,7 +194,7 @@ fun MenuApp(){
     Column (modifier = Modifier
         .verticalScroll(rememberScrollState())){
         Logo()
-        FoodItems(
+        CreateInitialMenuItems(
             modifier = Modifier
         )
         TotalPrices()

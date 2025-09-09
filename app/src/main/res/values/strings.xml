@@ -26,4 +26,13 @@
         <item>3.00</item>
         <item>1.50</item>
     </string-array>
+
+    <integer-array name="food_quantitites">
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </integer-array>
 </resources>
