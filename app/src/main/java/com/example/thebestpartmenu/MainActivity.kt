@@ -6,7 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +30,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -38,7 +42,10 @@ import androidx.compose.ui.unit.dp
 import com.example.thebestpartmenu.ui.theme.TheBestPartMenuTheme
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
-
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.clip
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,23 +63,30 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LogoSection(modifier :Modifier = Modifier) {
     val icon = R.drawable.the_best_part_icon
-    Row(modifier = Modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ){
-        Image(
-            painter = painterResource(icon),
-            contentDescription =  R.drawable.the_best_part_icon.toString(),
-            modifier
-                .width(150.dp)
-                .height(150.dp)
-        )
-        Text(
-            text = stringResource(R.string.app_description),
-            modifier
-                .padding(top = 55.dp)
-                .height(150.dp),
-            textAlign = TextAlign.Center
-        )
+    Box(modifier
+        .border(21.dp, Color.White, RectangleShape)){
+        Row(
+            modifier = Modifier
+                .background(Color.LightGray),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(icon),
+                contentDescription = R.drawable.the_best_part_icon.toString(),
+                modifier
+                    .width(150.dp)
+                    .height(150.dp)
+            )
+            Text(
+                text = stringResource(R.string.app_description),
+                modifier
+                    .padding(top = 60.dp)
+                    .padding(end = 30.dp)
+                    .height(150.dp),
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 
 }
@@ -127,19 +141,25 @@ fun FoodItemsSection(modifier: Modifier, initialMenuItems : MutableList<MenuItem
     Column (modifier = modifier
         .padding(16.dp)){
         for(food in initialMenuItems){
-            Text(
-                text = "${food.food_name}. ${food.food_description}",
-                modifier.padding(10.dp),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "Price: ${roundToTwoDecimals(food.food_price)}$",
-                modifier.padding(10.dp),
-                textAlign = TextAlign.Center
-            )
-            AddQuantitySection(modifier, food)
+            Column(modifier
+                .border(5.dp, Color.White, RectangleShape)
+                .background(Color.LightGray)
+                .padding(16.dp)
+            ){
+                Text(
+                    text = "${food.food_name}. ${food.food_description}",
+                    modifier.padding(10.dp),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "Price: ${roundToTwoDecimals(food.food_price)}$",
+                    modifier.padding(10.dp),
+                    textAlign = TextAlign.Center,
+                )
+                AddQuantitySection(modifier, food)
+            }
         }
-
     }
 }
 
