@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,16 +37,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.thebestpartmenu.ui.theme.TheBestPartMenuTheme
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.draw.clip
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +57,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//This function creates the logo section
+//This function creates the logo section with the icon and the description of the app
 @Composable
 fun LogoSection(modifier :Modifier = Modifier) {
     val icon = R.drawable.the_best_part_icon
@@ -92,7 +90,7 @@ fun LogoSection(modifier :Modifier = Modifier) {
 }
 
 //this sections creates the mutableList of menu items with the string array resources
-//and calls the method that displays the items
+//and calls the method that displays the items, it returns the created list
 @Composable
 fun createFoodSection(modifier :Modifier = Modifier) : MutableList<MenuItem>{
     val foodNames= stringArrayResource(id = R.array.food_names)
@@ -107,7 +105,8 @@ fun createFoodSection(modifier :Modifier = Modifier) : MutableList<MenuItem>{
     return initialMenuItems
 }
 
-//this creates the total section with the clear button that clears the quantity of foods
+//this creates the interactive total section
+//it has the clear button that clears the quantity of foods
 //with the place order button that only generates the qr code with the receipt
 //if the button is pressed
 @Composable
@@ -197,7 +196,9 @@ fun roundToTwoDecimals(number: Double): String{
 //method that clears the quantity of food that a user has added
 fun clear(initialMenuItems : MutableList<MenuItem> ){
     for (food in initialMenuItems){
-        food.food_quantity.value = 0
+        if(food.food_quantity.value > 0){
+            food.food_quantity.value = 0
+        }
     }
 }
 
@@ -226,7 +227,8 @@ fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
     for(food in initialMenuItems){
         if(food.food_quantity.value > 0){
             jsonMenuItems += """
-                Food: ${food.food_name}, Description: ${food.food_description}, Price: ${food.food_price}, Quantity: ${food.food_quantity.value} 
+                Food: ${food.food_name}, Description: ${food.food_description}, 
+                Price: ${food.food_price}, Quantity: ${food.food_quantity.value} 
                     """.trimIndent()
         }else{
             quantityIsZero++

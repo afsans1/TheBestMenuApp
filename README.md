@@ -8,14 +8,17 @@ This app allows you to navigate our menu and order pastries or coffees. It calcu
 Example of what the app looks like/Screenshots:
 ![ScreenShot](app\src\main\res\drawable\app_screen_shot1.png.png)
 ![ScreenShot](app\src\main\res\drawable\app_screen_shot2.png.png)
+(The screenshots are clickable via vscode I don't think they are through android studio, but the relative path is correct,
+if you want to see what it looks like)
 
 Setup Instructions:
 Open the project on Android Studio and run the MainActivity.kt 
 or open the app on an android device!
 
 Bugs:
-Once the place order has been pressed the qr code is always there and it gets dynamically changed everytime the quantity 
-of the food items are changed. I don't think that it's necessarily a bad thing since the client always has access to their receipt.
+Once the place order button has been pressed the qr code is always there and it gets dynamically changed everytime the quantity 
+of the food items are changed. I don't think that it's necessarily a bad thing since the client always has access to their receipt, but
+it is important to address.
 
 ## Getting started
 
