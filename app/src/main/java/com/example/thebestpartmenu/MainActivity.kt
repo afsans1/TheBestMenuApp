@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,13 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -80,18 +76,23 @@ fun Logo(modifier :Modifier = Modifier) {
 }
 
 @Composable
-fun CreateInitialMenuApp(modifier :Modifier = Modifier){
-    var foodPricesTotal = 0.0
+fun CreateFoodSection(modifier :Modifier = Modifier) : MutableList<MenuItem>{
     val foodNames= stringArrayResource(id = R.array.food_names)
     val foodDescriptions= stringArrayResource(id = R.array.food_descriptions)
     val foodPrices= stringArrayResource(id = R.array.food_prices)
-    var orderPlaced by rememberSaveable { mutableStateOf(false) }
     val initialMenuItems = rememberSaveable {
         MutableList(foodNames.size) { i ->
             MenuItem(foodNames[i], foodDescriptions[i], foodPrices[i].toDouble(), mutableStateOf(0))
         }
     }
-    FoodItems(modifier, initialMenuItems)
+    FoodItemsSection(modifier, initialMenuItems)
+    return initialMenuItems
+}
+
+@Composable
+fun CreateTotalSection(modifier :Modifier, initialMenuItems : MutableList<MenuItem>){
+    var foodPricesTotal = 0.0
+    var orderPlaced by rememberSaveable { mutableStateOf(false) }
     for (food in initialMenuItems){
         foodPricesTotal +=  food.food_quantity.value * food.food_price
     }
@@ -104,19 +105,17 @@ fun CreateInitialMenuApp(modifier :Modifier = Modifier){
         Button(onClick = {orderPlaced = true} ){
             Text("Place Order")
         }
-
         Button(onClick = { Clear(initialMenuItems) }) {
             Text("Clear")
         }
     }
-
     if (orderPlaced == true){
         QRCodeDisplay(modifier, jsonData)
     }
 }
 
 @Composable
-fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<MenuItem>){
+fun FoodItemsSection(modifier: Modifier, initialMenuItems : MutableList<MenuItem>){
     Column (modifier = modifier
         .padding(16.dp)){
         for(food in initialMenuItems){
@@ -130,28 +129,33 @@ fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<MenuItem>){
                 modifier.padding(10.dp),
                 textAlign = TextAlign.Center
             )
-            Row (modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center){
-                Button(onClick =  {
-                    food.food_quantity.value += 1
-                }){
-                    Text("+")
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = "${food.food_quantity.value}",
-                    modifier.padding(top = 13.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(onClick =  {
-                    if(food.food_quantity.value>0){
-                        food.food_quantity.value -= 1
-                    }
-                }){
-                    Text("-")
-                }
-            }
+            AddQuantitySection(modifier, food)
         }
 
+    }
+}
+
+@Composable
+fun AddQuantitySection(modifier: Modifier, food : MenuItem){
+    Row (modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center){
+        Button(onClick =  {
+            if(food.food_quantity.value>0){
+                food.food_quantity.value -= 1
+            }
+        }){
+            Text("-")
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = "${food.food_quantity.value}",
+            modifier.padding(top = 13.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Button(onClick =  {
+            food.food_quantity.value += 1
+        }){
+            Text("+")
+        }
     }
 }
 
@@ -244,9 +248,10 @@ fun MenuApp(){
         .verticalScroll(rememberScrollState())
         .statusBarsPadding()){
         Logo()
-        CreateInitialMenuApp(
+        val initialMenuItems = CreateFoodSection(
             modifier = Modifier
         )
+        CreateTotalSection(modifier = Modifier, initialMenuItems)
     }
 }
 
