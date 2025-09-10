@@ -97,4 +97,6 @@ https://www.pexels.com/photo/cooked-food-2451673/
 (The text was added by me on Canvas)
 Code for qr code:
  https://gitlab.com/crdavis/texttoqrcode/-/blob/master/app/src/main/java/com/example/texttoqrcode/MainActivity.kt?ref_type=heads
+LazyColumn:
+https://developer.android.com/develop/ui/compose/lists
 

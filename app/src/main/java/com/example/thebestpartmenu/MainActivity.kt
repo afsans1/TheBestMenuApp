@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,9 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
@@ -55,12 +59,10 @@ class MainActivity : ComponentActivity() {
 fun Logo(modifier :Modifier = Modifier) {
     val icon = R.drawable.the_best_part_icon
     Row(modifier = Modifier,
-//        .border(width = 5.dp, Color = Color.DarkGray,  Shape = RectangleShape),
-        verticalAlignment = Alignment.CenterVertically){
-        //make it into icon maybe?
+        verticalAlignment = Alignment.CenterVertically,
+    ){
         Image(
             painter = painterResource(icon),
-            //provide a message if logo cannot be loaded
             contentDescription =  R.drawable.the_best_part_icon.toString(),
             modifier
                 .width(150.dp)
@@ -83,8 +85,8 @@ fun CreateInitialMenuApp(modifier :Modifier = Modifier){
     val foodNames= stringArrayResource(id = R.array.food_names)
     val foodDescriptions= stringArrayResource(id = R.array.food_descriptions)
     val foodPrices= stringArrayResource(id = R.array.food_prices)
-    var orderPlaced by remember { mutableStateOf(false) }
-    val initialMenuItems = remember {
+    var orderPlaced by rememberSaveable { mutableStateOf(false) }
+    val initialMenuItems = rememberSaveable {
         MutableList(foodNames.size) { i ->
             MenuItem(foodNames[i], foodDescriptions[i], foodPrices[i].toDouble(), mutableStateOf(0))
         }
