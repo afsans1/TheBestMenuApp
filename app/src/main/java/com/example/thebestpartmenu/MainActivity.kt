@@ -77,6 +77,8 @@ fun LogoSection(modifier :Modifier = Modifier) {
 
 }
 
+//this sections creates the mutableList of menu items with the string array resources
+//and calls the method that displays the items
 @Composable
 fun createFoodSection(modifier :Modifier = Modifier) : MutableList<MenuItem>{
     val foodNames= stringArrayResource(id = R.array.food_names)
@@ -91,6 +93,9 @@ fun createFoodSection(modifier :Modifier = Modifier) : MutableList<MenuItem>{
     return initialMenuItems
 }
 
+//this creates the total section with the clear button that clears the quantity of foods
+//with the place order button that only generates the qr code with the receipt
+//if the button is pressed
 @Composable
 fun CreateTotalSection(modifier :Modifier, initialMenuItems : MutableList<MenuItem>){
     var foodPricesTotal = 0.0
@@ -116,6 +121,7 @@ fun CreateTotalSection(modifier :Modifier, initialMenuItems : MutableList<MenuIt
     }
 }
 
+//this is the method that displays the food items nicely
 @Composable
 fun FoodItemsSection(modifier: Modifier, initialMenuItems : MutableList<MenuItem>){
     Column (modifier = modifier
@@ -137,6 +143,7 @@ fun FoodItemsSection(modifier: Modifier, initialMenuItems : MutableList<MenuItem
     }
 }
 
+//this method creates the buttons to change the quantity of foods
 @Composable
 fun AddQuantitySection(modifier: Modifier, food : MenuItem){
     Row (modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center){
@@ -174,6 +181,8 @@ fun clear(initialMenuItems : MutableList<MenuItem> ){
     }
 }
 
+
+//this method displays the generated qr code
 @Composable
 fun QRCodeDisplay(modifier: Modifier = Modifier, jsonData : String) {
     val bitmap = generateQRCode(jsonData, 512, 512)
@@ -189,6 +198,8 @@ fun QRCodeDisplay(modifier: Modifier = Modifier, jsonData : String) {
     }
 }
 
+//this method makes the food list into a json if they order a quantity higher than 0
+//if they don't order anything it displays that their cart is empty
 fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
     var quantityIsZero = 0
     var jsonMenuItems = """"""
@@ -207,7 +218,7 @@ fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
     return jsonMenuItems
 }
 
-
+//this method creates the QR code
 fun generateQRCode(inputStr: String, codeWidth: Int, codeHeight: Int): Bitmap? {
     try{
         val barcodeEncoder = BarcodeEncoder()
@@ -219,6 +230,7 @@ fun generateQRCode(inputStr: String, codeWidth: Int, codeHeight: Int): Bitmap? {
 
 }
 
+//this method calculates and displays the total with the taxes
 @Composable
 fun DisplayTotal(foodPricesTotal : Double){
     val gst = 0.05 * foodPricesTotal
@@ -242,7 +254,7 @@ fun DisplayTotal(foodPricesTotal : Double){
     }
 }
 
-
+//this is the function that calls all of the composable functions at the right place
 @Composable
 fun MenuApp(){
     Column (modifier = Modifier
