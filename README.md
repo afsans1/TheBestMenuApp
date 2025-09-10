@@ -1,7 +1,17 @@
 # Mobile-Dev-Assign-1
+Title:
+The Best Menu App
 
+Description/Overview:
+This app allows you to navigate our menu and order pastries or coffees. It calculates the total and displays the receipt with a QR code. 
 
+Example of what the app looks like/Screenshots:
+![ScreenShot](app\src\main\res\drawable\AppScreenShot1.png)
+![ScreenShot](app\src\main\res\drawable\AppScreenShot2.png)
 
+Setup Instructions:
+Open the project on Android Studio and run the MainActivity.kt 
+or open the app on an android device!
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
