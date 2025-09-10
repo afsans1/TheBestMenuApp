@@ -226,7 +226,7 @@ fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
     for(food in initialMenuItems){
         if(food.food_quantity.value > 0){
             jsonMenuItems += """
-                $food
+                Food: ${food.food_name}, Description: ${food.food_description}, Price: ${food.food_price}, Quantity: ${food.food_quantity.value} 
                     """.trimIndent()
         }else{
             quantityIsZero++

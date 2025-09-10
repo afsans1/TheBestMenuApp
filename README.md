@@ -12,6 +12,11 @@ Example of what the app looks like/Screenshots:
 Setup Instructions:
 Open the project on Android Studio and run the MainActivity.kt 
 or open the app on an android device!
+
+Bugs:
+Once the place order has been pressed the qr code is always there and it gets dynamically changed everytime the quantity 
+of the food items are changed. I don't think that it's necessarily a bad thing since the client always has access to their receipt.
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
