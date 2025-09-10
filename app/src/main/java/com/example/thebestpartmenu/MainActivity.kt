@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -66,7 +67,7 @@ fun Logo(modifier :Modifier = Modifier) {
                 .height(150.dp)
         )
         Text(
-            text = "Explore The Best Part coffee shop menu to always get the part of your favorite pastries!",
+            text = stringResource(R.string.app_description),
             modifier
                 .padding(top = 55.dp)
                 .height(150.dp),
@@ -77,8 +78,8 @@ fun Logo(modifier :Modifier = Modifier) {
 }
 
 @Composable
-fun CreateInitialMenuItems(modifier :Modifier = Modifier){
-    var foodPrice = 0.0
+fun CreateInitialMenuApp(modifier :Modifier = Modifier){
+    var foodPricesTotal = 0.0
     val foodNames= stringArrayResource(id = R.array.food_names)
     val foodDescriptions= stringArrayResource(id = R.array.food_descriptions)
     val foodPrices= stringArrayResource(id = R.array.food_prices)
@@ -90,18 +91,23 @@ fun CreateInitialMenuItems(modifier :Modifier = Modifier){
     }
     FoodItems(modifier, initialMenuItems)
     for (food in initialMenuItems){
-        foodPrice +=  food.food_quantity.value * food.food_price
-//        Clear(food)
+        foodPricesTotal +=  food.food_quantity.value * food.food_price
     }
-    DisplayTotal(foodPrice)
+    DisplayTotal(foodPricesTotal)
     val jsonData = getMenuItems(initialMenuItems)
-    Button(onClick = {orderPlaced = true} ){
-        Text("Place Order")
+    Column(modifier = modifier
+        .padding(16.dp)
+        .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally){
+        Button(onClick = {orderPlaced = true} ){
+            Text("Place Order")
+        }
+
+        Button(onClick = { Clear(initialMenuItems) }) {
+            Text("Clear")
+        }
     }
 
-    Button(onClick = { Clear(initialMenuItems) }) {
-        Text("Clear")
-    }
     if (orderPlaced == true){
         QRCodeDisplay(modifier, jsonData)
     }
@@ -112,8 +118,6 @@ fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<MenuItem>){
     Column (modifier = modifier
         .padding(16.dp)){
         for(food in initialMenuItems){
-
-//            clear(food)
             Text(
                 text = "${food.food_name}. ${food.food_description}",
                 modifier.padding(10.dp),
@@ -149,10 +153,13 @@ fun FoodItems(modifier: Modifier, initialMenuItems : MutableList<MenuItem>){
     }
 }
 
+//Method that rounds any double to have only two decimals
 fun roundToTwoDecimals(number: Double): String{
     return String.format("%.2f", number)
 }
 
+
+//method that clears the quantity of food that a user has added
 fun Clear(initialMenuItems : MutableList<MenuItem> ){
     for (food in initialMenuItems){
         food.food_quantity.value = 0
@@ -173,7 +180,7 @@ fun QRCodeDisplay(modifier: Modifier = Modifier, jsonData : String) {
         Image(bitmap!!.asImageBitmap(), contentDescription = null)
     }
 }
-@Composable
+
 fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
     var quanityIsZero = 0;
     var jsonMenuItems = """"""
@@ -192,7 +199,7 @@ fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
     return jsonMenuItems
 }
 
-@Composable
+
 fun generateQRCode(inputStr: String, codeWidth: Int, codeHeight: Int): Bitmap? {
     try{
         val barcodeEncoder = BarcodeEncoder()
@@ -204,21 +211,17 @@ fun generateQRCode(inputStr: String, codeWidth: Int, codeHeight: Int): Bitmap? {
 
 }
 
-//for barcode
-//generateEncoder()
-//encodeBitMap(inputStr, BarcodeFormat.QR_CODE)
-
 @Composable
-fun DisplayTotal(foodPrice : Double){
-    val gst = 0.05 * foodPrice
-    val qst = 0.09975 * foodPrice
-    var net_total = gst + qst + foodPrice
+fun DisplayTotal(foodPricesTotal : Double){
+    val gst = 0.05 * foodPricesTotal
+    val qst = 0.09975 * foodPricesTotal
+    var net_total = gst + qst + foodPricesTotal
     net_total = net_total
     Column (modifier = Modifier
         .padding(16.dp)
     ){
         Text(
-            text = "Total: $${roundToTwoDecimals(foodPrice)}"
+            text = "Total: $${roundToTwoDecimals(foodPricesTotal)}"
         )
         Text(
             text = "GST (5%): $${roundToTwoDecimals(gst)}"
@@ -233,18 +236,13 @@ fun DisplayTotal(foodPrice : Double){
 }
 
 
-data class MenuItem(
-    var food_name: String,
-    var food_description: String,
-    var food_price: Double,
-    var food_quantity: MutableState<Int>)
-
 @Composable
 fun MenuApp(){
     Column (modifier = Modifier
-        .verticalScroll(rememberScrollState())){
+        .verticalScroll(rememberScrollState())
+        .statusBarsPadding()){
         Logo()
-        CreateInitialMenuItems(
+        CreateInitialMenuApp(
             modifier = Modifier
         )
     }
