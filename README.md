@@ -95,3 +95,6 @@ If you have run out of energy or time for your project, put a note at the top of
 Open source picture: 
 https://www.pexels.com/photo/cooked-food-2451673/
 (The text was added by me on Canvas)
+Code for qr code:
+ https://gitlab.com/crdavis/texttoqrcode/-/blob/master/app/src/main/java/com/example/texttoqrcode/MainActivity.kt?ref_type=heads
+

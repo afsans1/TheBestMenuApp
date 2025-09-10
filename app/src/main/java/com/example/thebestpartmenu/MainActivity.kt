@@ -1,58 +1,41 @@
 package com.example.thebestpartmenu
 
-import android.graphics.drawable.shapes.OvalShape
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.provider.ContactsContract.Data
-import android.view.Menu
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.pointer.motionEventSpy
-import androidx.compose.ui.layout.VerticalAlignmentLine
-import androidx.compose.ui.modifier.modifierLocalOf
-import androidx.compose.ui.res.integerArrayResource
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.thebestpartmenu.ui.theme.TheBestPartMenuTheme
-import kotlinx.coroutines.internal.OpDescriptor
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import kotlin.math.round
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.BarcodeEncoder
 
 
 class MainActivity : ComponentActivity() {
@@ -99,6 +82,7 @@ fun CreateInitialMenuItems(modifier :Modifier = Modifier){
     val foodNames= stringArrayResource(id = R.array.food_names)
     val foodDescriptions= stringArrayResource(id = R.array.food_descriptions)
     val foodPrices= stringArrayResource(id = R.array.food_prices)
+    var orderPlaced by remember { mutableStateOf(false) }
     val initialMenuItems = remember {
         MutableList(foodNames.size) { i ->
             MenuItem(foodNames[i], foodDescriptions[i], foodPrices[i].toDouble(), mutableStateOf(0))
@@ -110,8 +94,16 @@ fun CreateInitialMenuItems(modifier :Modifier = Modifier){
 //        Clear(food)
     }
     DisplayTotal(foodPrice)
-    Button(onClick = { Clear(initialMenuItems) } ) {
+    val jsonData = getMenuItems(initialMenuItems)
+    Button(onClick = {orderPlaced = true} ){
+        Text("Place Order")
+    }
+
+    Button(onClick = { Clear(initialMenuItems) }) {
         Text("Clear")
+    }
+    if (orderPlaced == true){
+        QRCodeDisplay(modifier, jsonData)
     }
 }
 
@@ -167,40 +159,54 @@ fun Clear(initialMenuItems : MutableList<MenuItem> ){
     }
 }
 
-//@Composable
-//fun QRCodeDisplay(modifier: Modifier = Modifier) {
-//    val bitmap = generateQRCode(jsonData, 512, 512)
-//
-//    // Display the QR code
-//    Column(
-//        modifier = modifier.fillMaxSize(),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.Center
-//    )
-//    {
-//        Image(bitmap!!.asImageBitmap(), contentDescription = null)
-//    }
-//}
-//fun getMenuItems(): String {
-//    val egJsonArray = """
-//        [
-//            {"menu": "Favourite healthy meal", "price": 12.00, "Description": "Very tasty"}
-//            {"menu": "Good priced meal", "price": 10.00, "Description": "Kids favourite"}
-//        ]
-//    """.trimIndent()
-//    return egJsonArray
-//}
-//
-//fun generateQRCode(inputStr: String, codeWidth: Int, codeHeight: Int): Bitmap? {
-//    try{
-//        val barcodeEncoder = BarcodeEncoder()
-//        return barcodeEncoder.encodeBitmap(inputStr, BarcodeFormat.QR_CODE, codeWidth, codeHeight)
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        return null
-//    }
-//
-//}
+@Composable
+fun QRCodeDisplay(modifier: Modifier = Modifier, jsonData : String) {
+    val bitmap = generateQRCode(jsonData, 512, 512)
+
+    // Display the QR code
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    )
+    {
+        Image(bitmap!!.asImageBitmap(), contentDescription = null)
+    }
+}
+@Composable
+fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
+    var quanityIsZero = 0;
+    var jsonMenuItems = """"""
+    for(food in initialMenuItems){
+        if(food.food_quantity.value > 0){
+            jsonMenuItems += """
+                ${food}
+                    """.trimIndent()
+        }else{
+            quanityIsZero++
+        }
+    }
+    if(quanityIsZero == initialMenuItems.size){
+        jsonMenuItems = "Your cart is empty"
+    }
+    return jsonMenuItems
+}
+
+@Composable
+fun generateQRCode(inputStr: String, codeWidth: Int, codeHeight: Int): Bitmap? {
+    try{
+        val barcodeEncoder = BarcodeEncoder()
+        return barcodeEncoder.encodeBitmap(inputStr, BarcodeFormat.QR_CODE, codeWidth, codeHeight)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        return null
+    }
+
+}
+
+//for barcode
+//generateEncoder()
+//encodeBitMap(inputStr, BarcodeFormat.QR_CODE)
 
 @Composable
 fun DisplayTotal(foodPrice : Double){
@@ -226,21 +232,12 @@ fun DisplayTotal(foodPrice : Double){
     }
 }
 
-//fun Clear(){
-//    Button(onClick = {}) {
-//        "Clear"
-//    }
-//}
 
 data class MenuItem(
     var food_name: String,
     var food_description: String,
     var food_price: Double,
     var food_quantity: MutableState<Int>)
-
-//for barcode
-//generateEncoder()
-//encodeBitMap(inputStr, BarcodeFormat.QR_CODE)
 
 @Composable
 fun MenuApp(){
