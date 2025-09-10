@@ -6,8 +6,8 @@ Description/Overview:
 This app allows you to navigate our menu and order pastries or coffees. It calculates the total and displays the receipt with a QR code. 
 
 Example of what the app looks like/Screenshots:
-![ScreenShot](app\src\main\res\drawable\AppScreenShot1.png)
-![ScreenShot](app\src\main\res\drawable\AppScreenShot2.png)
+![ScreenShot](app\src\main\res\drawable\app_screen_shot1.png.png)
+![ScreenShot](app\src\main\res\drawable\app_screen_shot2.png.png)
 
 Setup Instructions:
 Open the project on Android Studio and run the MainActivity.kt 
