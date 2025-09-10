@@ -22,6 +22,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -51,8 +52,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//This function creates the logo section
 @Composable
-fun Logo(modifier :Modifier = Modifier) {
+fun LogoSection(modifier :Modifier = Modifier) {
     val icon = R.drawable.the_best_part_icon
     Row(modifier = Modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -76,13 +78,13 @@ fun Logo(modifier :Modifier = Modifier) {
 }
 
 @Composable
-fun CreateFoodSection(modifier :Modifier = Modifier) : MutableList<MenuItem>{
+fun createFoodSection(modifier :Modifier = Modifier) : MutableList<MenuItem>{
     val foodNames= stringArrayResource(id = R.array.food_names)
     val foodDescriptions= stringArrayResource(id = R.array.food_descriptions)
     val foodPrices= stringArrayResource(id = R.array.food_prices)
     val initialMenuItems = rememberSaveable {
         MutableList(foodNames.size) { i ->
-            MenuItem(foodNames[i], foodDescriptions[i], foodPrices[i].toDouble(), mutableStateOf(0))
+            MenuItem(foodNames[i], foodDescriptions[i], foodPrices[i].toDouble(), mutableIntStateOf(0))
         }
     }
     FoodItemsSection(modifier, initialMenuItems)
@@ -105,7 +107,7 @@ fun CreateTotalSection(modifier :Modifier, initialMenuItems : MutableList<MenuIt
         Button(onClick = {orderPlaced = true} ){
             Text("Place Order")
         }
-        Button(onClick = { Clear(initialMenuItems) }) {
+        Button(onClick = { clear(initialMenuItems) }) {
             Text("Clear")
         }
     }
@@ -161,12 +163,12 @@ fun AddQuantitySection(modifier: Modifier, food : MenuItem){
 
 //Method that rounds any double to have only two decimals
 fun roundToTwoDecimals(number: Double): String{
-    return String.format("%.2f", number)
+    return String.format( "%.2f", number)
 }
 
 
 //method that clears the quantity of food that a user has added
-fun Clear(initialMenuItems : MutableList<MenuItem> ){
+fun clear(initialMenuItems : MutableList<MenuItem> ){
     for (food in initialMenuItems){
         food.food_quantity.value = 0
     }
@@ -188,18 +190,18 @@ fun QRCodeDisplay(modifier: Modifier = Modifier, jsonData : String) {
 }
 
 fun getMenuItems(initialMenuItems : MutableList<MenuItem>): String {
-    var quanityIsZero = 0;
+    var quantityIsZero = 0
     var jsonMenuItems = """"""
     for(food in initialMenuItems){
         if(food.food_quantity.value > 0){
             jsonMenuItems += """
-                ${food}
+                $food
                     """.trimIndent()
         }else{
-            quanityIsZero++
+            quantityIsZero++
         }
     }
-    if(quanityIsZero == initialMenuItems.size){
+    if(quantityIsZero == initialMenuItems.size){
         jsonMenuItems = "Your cart is empty"
     }
     return jsonMenuItems
@@ -221,8 +223,7 @@ fun generateQRCode(inputStr: String, codeWidth: Int, codeHeight: Int): Bitmap? {
 fun DisplayTotal(foodPricesTotal : Double){
     val gst = 0.05 * foodPricesTotal
     val qst = 0.09975 * foodPricesTotal
-    var net_total = gst + qst + foodPricesTotal
-    net_total = net_total
+    var netTotal = gst + qst + foodPricesTotal
     Column (modifier = Modifier
         .padding(16.dp)
     ){
@@ -236,7 +237,7 @@ fun DisplayTotal(foodPricesTotal : Double){
             text = "QST (9.975%): $${roundToTwoDecimals(qst)}"
         )
         Text(
-            text = "Total (tax included): $${roundToTwoDecimals(net_total)}"
+            text = "Total (tax included): $${roundToTwoDecimals(netTotal)}"
         )
     }
 }
@@ -247,8 +248,8 @@ fun MenuApp(){
     Column (modifier = Modifier
         .verticalScroll(rememberScrollState())
         .statusBarsPadding()){
-        Logo()
-        val initialMenuItems = CreateFoodSection(
+        LogoSection()
+        val initialMenuItems = createFoodSection(
             modifier = Modifier
         )
         CreateTotalSection(modifier = Modifier, initialMenuItems)
