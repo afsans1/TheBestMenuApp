@@ -1,6 +1,24 @@
 # Mobile-Dev-Assign-1
+Title:
+The Best Menu App
 
+Description/Overview:
+This app allows you to navigate our menu and order pastries or coffees. It calculates the total and displays the receipt with a QR code. 
 
+Example of what the app looks like/Screenshots:
+![ScreenShot](app\src\main\res\drawable\app_screen_shot1.png.png)
+![ScreenShot](app\src\main\res\drawable\app_screen_shot2.png.png)
+(The screenshots are clickable via vscode I don't think they are through android studio, but the relative path is correct,
+if you want to see what it looks like)
+
+Setup Instructions:
+Open the project on Android Studio and run the MainActivity.kt 
+or open the app on an android device!
+
+Bugs:
+Once the place order button has been pressed the qr code is always there and it gets dynamically changed everytime the quantity 
+of the food items are changed. I don't think that it's necessarily a bad thing since the client always has access to their receipt, but
+it is important to address.
 
 ## Getting started
 
@@ -53,7 +71,7 @@ When you're ready to make this README your own, just edit this file and use the 
 Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
 
 ## Name
-Choose a self-explaining name for your project.
+The Best Part Menu App
 
 ## Description
 Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
@@ -91,3 +109,12 @@ For open source projects, say how it is licensed.
 
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Sources
+Open source picture: 
+https://www.pexels.com/photo/cooked-food-2451673/
+(The text was added by me on Canvas)
+Code for qr code:
+ https://gitlab.com/crdavis/texttoqrcode/-/blob/master/app/src/main/java/com/example/texttoqrcode/MainActivity.kt?ref_type=heads
+LazyColumn:
+https://developer.android.com/develop/ui/compose/lists
+
