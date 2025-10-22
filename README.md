@@ -8,8 +8,6 @@ This app allows you to navigate our menu and order pastries or coffees. It calcu
 ## Example of what the app looks like/Screenshots:
 ![ScreenShot](app/src/main/res/drawable/app_screen_shot1.png)
 ![ScreenShot](app/src/main/res/drawable/app_screen_shot2.png)
-(The screenshots are clickable via vscode I don't think they are through android studio, but the relative path is correct,
-if you want to see what it looks like)
 
 ## Setup Instructions:
 Open the project on Android Studio and run the MainActivity.kt 
